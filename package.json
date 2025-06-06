@@ -1,0 +1,21 @@
+{
+  "name": "nodit-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -x node --inspect src/index.js --ext js",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "nodemon": "^3.1.10",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.5.0"
+  }
+}
