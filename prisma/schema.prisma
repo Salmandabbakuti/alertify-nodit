@@ -16,7 +16,7 @@ datasource db {
 }
 
 model NoditWebhook {
-  id         String   @id @default(cuid())
+  id         String   @id // subscription id from Nodit useful for managing webhooks
   protocol   String   @default("ethereum") // e.g. ethereum, polygon, arbitrum, aptos, etc.
   network    String   @default("sepolia") // e.g. mainnet, testnet
   eventType  String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
@@ -25,7 +25,7 @@ model NoditWebhook {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@index([protocol, network, eventType], name: "idx_protocol_network_event")
+  @@index([id, protocol, network, eventType], name: "idx_protocol_network_event")
   @@map("nodit_webhooks")
 }
 
@@ -36,6 +36,7 @@ model Monitor {
   eventType String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
   email     String   @unique // Email address to send notifications to
   addresses String[] @default([]) // Addresses to monitor for the event type
+  webhookId String // associated Nodit webhook id, if any
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
