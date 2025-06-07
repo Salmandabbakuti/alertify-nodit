@@ -1,21 +1,21 @@
 {
-  "name": "nodit-starter",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -x node --inspect src/index.js --ext js",
-    "start": "node src/index.js"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "nodemon": "^3.1.10",
-    "socket.io-client": "^4.8.1"
+    "@prisma/adapter-pg": "^6.9.0",
+    "@prisma/client": "^6.9.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "dotenv": "^16.5.0"
+    "prisma": "^6.9.0"
   }
 }
