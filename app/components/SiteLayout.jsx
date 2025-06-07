@@ -15,7 +15,6 @@ export default function SiteLayout({ children }) {
       <Header
         style={{
           position: "sticky",
-          top: 0,
           zIndex: 99,
           padding: 0,
           color: "#fff",
@@ -35,6 +34,7 @@ export default function SiteLayout({ children }) {
             Nodit Monitor
           </h3>
         </Link>
+        <appkit-button />
       </Header>
 
       <Content
@@ -55,7 +55,7 @@ export default function SiteLayout({ children }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          ©{new Date().getFullYear()} NODIT Monitor. Powered by Nodit
+          ©{new Date().getFullYear()} NODIT Monitor. Powered by Nodit & Reown
         </a>
         <p style={{ fontSize: "12px" }}>v0.1.0</p>
       </Footer>

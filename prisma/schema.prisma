@@ -6,7 +6,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["queryCompiler", "driverAdapters"]
+  previewFeatures = ["queryCompiler", "driverAdapters", "strictUndefinedChecks"]
   output          = "./generated"
 }
 
@@ -39,9 +39,10 @@ model Monitor {
   address     String // Address to monitor for the event type
   isActive    Boolean  @default(true) // Whether the monitor is active or not
   webhookId   String // associated Nodit webhook id, if any
+  createdBy   String // User eth address who created the monitor
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([email, protocol, network, eventType], name: "idx_email_protocol_network_event")
+  @@index([id, email, createdBy], name: "idx_email_createdBy")
   @@map("monitors")
 }

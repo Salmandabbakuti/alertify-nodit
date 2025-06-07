@@ -22,6 +22,7 @@ import {
   SyncOutlined
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useAppKitAccount } from "@reown/appkit/react";
 import { createMonitor, getMonitors, deleteMonitor } from "@/lib/actions";
 import "antd/dist/reset.css";
 
@@ -37,6 +38,7 @@ export default function Home() {
   });
 
   const [form] = Form.useForm();
+  const { address: account = "" } = useAppKitAccount(); // empty string is neccessary to avoid undefined issues in prisma queries
 
   const showAddModal = () => {
     setEditing(null);
@@ -51,9 +53,10 @@ export default function Home() {
   };
 
   const handleFinish = async (values) => {
+    if (!account) return message.error("Please connect your wallet first");
     setLoading((prev) => ({ ...prev, create: true }));
     try {
-      const createMonitorRes = await createMonitor(values);
+      const createMonitorRes = await createMonitor(values, account);
       console.log("createMonitorRes:", createMonitorRes);
       if (createMonitorRes?.error) {
         console.error("Error creating monitor:", createMonitorRes.error);
@@ -76,9 +79,7 @@ export default function Home() {
   const handleGetMonitors = async () => {
     setLoading((prev) => ({ ...prev, data: true }));
     try {
-      const getMonitorsRes = await getMonitors({
-        email: "dabbakuti.salman@gmail.com"
-      });
+      const getMonitorsRes = await getMonitors(account);
       console.log("getMonitorsRes:", getMonitorsRes);
       if (getMonitorsRes?.error) {
         console.error("Error getting monitors:", getMonitorsRes.error);
@@ -96,8 +97,9 @@ export default function Home() {
   };
 
   const handleDeleteMonitor = async (id) => {
+    if (!account) return message.error("Please connect your wallet first");
     try {
-      const deleteMonitorRes = await deleteMonitor(id);
+      const deleteMonitorRes = await deleteMonitor(id, account);
       console.log("deleteMonitorRes:", deleteMonitorRes);
       if (deleteMonitorRes.error) {
         console.error("Error deleting monitor:", deleteMonitorRes.error);
@@ -115,7 +117,7 @@ export default function Home() {
 
   useEffect(() => {
     handleGetMonitors();
-  }, []);
+  }, [account]);
 
   return (
     <div>
@@ -219,10 +221,14 @@ export default function Home() {
             name="address"
             label="Ethereum Address"
             hasFeedback
-            // help="Enter the Ethereum address to monitor"
+            help={
+              editing
+                ? "Address cannot be changed. Create a new monitor if needed."
+                : undefined
+            }
             rules={[{ required: true, message: "Please enter address" }]}
           >
-            <Input placeholder="0x..." />
+            <Input placeholder="0x..." readOnly={editing} />
           </Form.Item>
 
           {/* email */}
@@ -230,7 +236,11 @@ export default function Home() {
             name="email"
             label="Email"
             hasFeedback
-            // help="Notifications will be sent to this email"
+            help={
+              editing
+                ? "Email cannot be changed. Create a new monitor if needed."
+                : undefined
+            }
             rules={[
               {
                 required: true,
@@ -239,7 +249,7 @@ export default function Home() {
               { type: "email", message: "Please enter a valid email" }
             ]}
           >
-            <Input placeholder="you@example.com" />
+            <Input placeholder="you@example.com" readOnly={editing} />
           </Form.Item>
 
           <Form.Item name="description" label="Description">

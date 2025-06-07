@@ -23,6 +23,7 @@ CREATE TABLE "monitors" (
     "address" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "webhookId" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -36,4 +37,4 @@ CREATE INDEX "idx_protocol_network_event" ON "nodit_webhooks"("id", "protocol", 
 CREATE UNIQUE INDEX "monitors_email_key" ON "monitors"("email");
 
 -- CreateIndex
-CREATE INDEX "idx_email_protocol_network_event" ON "monitors"("email", "protocol", "network", "eventType");
+CREATE INDEX "idx_email_createdBy" ON "monitors"("id", "email", "createdBy");
