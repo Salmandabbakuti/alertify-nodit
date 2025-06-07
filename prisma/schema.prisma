@@ -14,3 +14,31 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model NoditWebhook {
+  id         String   @id @default(cuid())
+  protocol   String   @default("ethereum") // e.g. ethereum, polygon, arbitrum, aptos, etc.
+  network    String   @default("sepolia") // e.g. mainnet, testnet
+  eventType  String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
+  webhookUrl String // URL to which the webhook will send data when triggered e.g api route of your app
+  addresses  String[] @default([]) // List of addresses to monitor for the event type
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([protocol, network, eventType], name: "idx_protocol_network_event")
+  @@map("nodit_webhooks")
+}
+
+model Monitor {
+  id        String   @id @default(cuid())
+  protocol  String   @default("ethereum") // e.g. ethereum, polygon, arbitrum, aptos, etc.
+  network   String   @default("sepolia") // e.g. mainnet, testnet
+  eventType String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
+  email     String   @unique // Email address to send notifications to
+  addresses String[] @default([]) // Addresses to monitor for the event type
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email, protocol, network, eventType], name: "idx_email_protocol_network_event")
+  @@map("monitors")
+}
