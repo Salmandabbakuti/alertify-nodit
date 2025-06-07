@@ -27,31 +27,8 @@ import "antd/dist/reset.css";
 
 const { Text } = Typography;
 
-const dummyData = [
-  {
-    id: "1",
-    address: "0x73484943C...8becD77B9",
-    nameTag: "My Primary Address",
-    note: "My primary address",
-    addedOn: "2022-07-05",
-    balance: "$521.99",
-    notify: "all",
-    tokens: ["erc20"]
-  },
-  {
-    id: "2",
-    address: "0xc2009D70...780eaF2d7",
-    nameTag: null,
-    note: "Secondary Address",
-    addedOn: "2024-03-12",
-    balance: "$45.73",
-    notify: "incoming",
-    tokens: []
-  }
-];
-
 export default function Home() {
-  const [monitors, setMonitors] = useState(dummyData);
+  const [monitors, setMonitors] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState({
@@ -86,13 +63,13 @@ export default function Home() {
       message.success("Monitor created successfully");
       setModalOpen(false);
       form.resetFields();
+      handleGetMonitors(); // Refresh the list after creation
       return createMonitorRes;
     } catch (error) {
       console.error("Error creating monitor:", error);
       message.error("Failed to create monitor. Please try again.");
     } finally {
       setLoading((prev) => ({ ...prev, create: false }));
-      handleGetMonitors(); // Refresh the list after creation
     }
   };
 
@@ -100,7 +77,7 @@ export default function Home() {
     setLoading((prev) => ({ ...prev, data: true }));
     try {
       const getMonitorsRes = await getMonitors({
-        email: "salmandev@gmail.com"
+        email: "dabbakuti.salman@gmail.com"
       });
       console.log("getMonitorsRes:", getMonitorsRes);
       if (getMonitorsRes?.error) {
@@ -202,25 +179,27 @@ export default function Home() {
           >
             <List.Item.Meta
               title={
-                <Space>
-                  <span className="font-mono">{item.address}</span>
-                  <MailOutlined />
+                <Space wrap>
+                  <Text strong>{item.address}</Text>
+                  <Tag color="blue">{item?.eventType}</Tag>
+                  <Tag color={item.isActive ? "green" : "red"}>
+                    {item.isActive ? "Active" : "Inactive"}
+                  </Tag>
                 </Space>
               }
               description={
-                <>
-                  <Text type="secondary">Added on: {item.addedOn}</Text>
-                  <br />
-                  <Text strong>Balance:</Text> {item.balance}
-                  <br />
-                  {item.note && (
-                    <>
-                      <Text strong>Note:</Text> {item.note}
-                      <br />
-                    </>
-                  )}
-                  {item.nameTag && <Tag color="blue">{item.nameTag}</Tag>}
-                </>
+                <Space wrap>
+                  <Text type="secondary">
+                    {item.description || "No description"}
+                  </Text>
+                  <Text type="secondary">
+                    <MailOutlined /> {item.email || "Not provided"}
+                  </Text>
+                  <Text type="secondary">
+                    Added on:{" "}
+                    {dayjs(item.createdAt).format("DD MMM YYYY HH:mm")}
+                  </Text>
+                </Space>
               }
             />
           </List.Item>
@@ -239,9 +218,28 @@ export default function Home() {
           <Form.Item
             name="address"
             label="Ethereum Address"
+            hasFeedback
+            // help="Enter the Ethereum address to monitor"
             rules={[{ required: true, message: "Please enter address" }]}
           >
             <Input placeholder="0x..." />
+          </Form.Item>
+
+          {/* email */}
+          <Form.Item
+            name="email"
+            label="Email"
+            hasFeedback
+            // help="Notifications will be sent to this email"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your email to receive notifications"
+              },
+              { type: "email", message: "Please enter a valid email" }
+            ]}
+          >
+            <Input placeholder="you@example.com" />
           </Form.Item>
 
           <Form.Item name="description" label="Description">
