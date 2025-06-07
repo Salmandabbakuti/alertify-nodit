@@ -30,15 +30,17 @@ model NoditWebhook {
 }
 
 model Monitor {
-  id        String   @id @default(cuid())
-  protocol  String   @default("ethereum") // e.g. ethereum, polygon, arbitrum, aptos, etc.
-  network   String   @default("sepolia") // e.g. mainnet, testnet
-  eventType String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
-  email     String   @unique // Email address to send notifications to
-  addresses String[] @default([]) // Addresses to monitor for the event type
-  webhookId String // associated Nodit webhook id, if any
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  description String?  @default("") // Optional description for the monitor
+  protocol    String   @default("ethereum") // e.g. ethereum, polygon, arbitrum, aptos, etc.
+  network     String   @default("sepolia") // e.g. mainnet, testnet
+  eventType   String   @default("ADDRESS_ACTIVITY") // eg. Nodit event type like "ADDRESS_ACTIVITY"
+  email       String   @unique // Email address to send notifications to
+  address     String // Address to monitor for the event type
+  isActive    Boolean  @default(true) // Whether the monitor is active or not
+  webhookId   String // associated Nodit webhook id, if any
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([email, protocol, network, eventType], name: "idx_email_protocol_network_event")
   @@map("monitors")
