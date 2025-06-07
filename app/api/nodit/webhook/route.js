@@ -20,8 +20,9 @@ export async function POST(req) {
     );
   }
   // Here you can handle the incoming webhook data
+  // process data for email notifications, etc.
   console.log("webhook received:", JSON.stringify(body, null, 2));
-  return NextResponse.json({ message: "Webhook received", data: body });
+  return NextResponse.json({ received: true }, { status: 200 });
 }
 
 export async function GET(req) {
