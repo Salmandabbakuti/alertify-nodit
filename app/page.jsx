@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   List,
@@ -10,7 +10,8 @@ import {
   Space,
   Tag,
   Typography,
-  Switch
+  Switch,
+  message
 } from "antd";
 import {
   EditOutlined,
@@ -47,41 +48,6 @@ const dummyData = [
   }
 ];
 
-const handleCreateMonitor = async () => {
-  const createMonitorRes = await createMonitor({
-    email: "salmandev@gmail.com",
-    addresses: [
-      "0x1b139586adb91e6bd81a213d98336a7c440bbe4e",
-      "0x9b3be3628e7f4957070990305F5f0ddeb9b0A0a3"
-    ]
-  });
-  console.log("createMonitorRes:", createMonitorRes);
-  if (createMonitorRes.error) {
-    console.error("Error creating monitor:", createMonitorRes.error);
-  }
-  return createMonitorRes;
-};
-
-const handleGetMonitors = async () => {
-  const getMonitorsRes = await getMonitors({ email: "salmandev@gmail.com" });
-  console.log("getMonitorsRes:", getMonitorsRes);
-  if (getMonitorsRes.error) {
-    console.error("Error getting monitors:", getMonitorsRes.error);
-  }
-  return getMonitorsRes;
-};
-
-const handleDeleteMonitor = async () => {
-  const deleteMonitorRes = await deleteMonitor({
-    id: "cmbm48i7s0000lszqaljj2cxa"
-  });
-  console.log("deleteMonitorRes:", deleteMonitorRes);
-  if (deleteMonitorRes.error) {
-    console.error("Error deleting monitor:", deleteMonitorRes.error);
-  }
-  return deleteMonitorRes;
-};
-
 export default function Home() {
   const [monitors, setMonitors] = useState(dummyData);
   const [modalOpen, setModalOpen] = useState(false);
@@ -101,26 +67,59 @@ export default function Home() {
     setModalOpen(true);
   };
 
-  const handleFinish = (values) => {
-    const newData = {
-      ...values,
-      id: editing ? editing.id : Date.now().toString(),
-      addedOn: editing?.addedOn || dayjs().format("YYYY-MM-DD"),
-      balance: "$0.00",
-      address: values.address
-    };
-
-    const updated = editing
-      ? monitors.map((addr) => (addr.id === editing.id ? newData : addr))
-      : [...monitors, newData];
-
-    setMonitors(updated);
-    setModalOpen(false);
+  const handleFinish = async (values) => {
+    try {
+      const createMonitorRes = await createMonitor(values);
+      console.log("createMonitorRes:", createMonitorRes);
+      if (createMonitorRes?.error) {
+        console.error("Error creating monitor:", createMonitorRes.error);
+        message.error(`Failed to create monitor: ${createMonitorRes.error}`);
+        return;
+      }
+      message.success("Monitor created successfully");
+      return createMonitorRes;
+    } catch (error) {
+      console.error("Error creating monitor:", error);
+      message.error("Failed to create monitor. Please try again.");
+    }
   };
 
-  const handleDelete = (id) => {
-    setMonitors(monitors.filter((a) => a.id !== id));
+  const handleGetMonitors = async () => {
+    try {
+      const getMonitorsRes = await getMonitors({
+        email: "salmandev@gmail.com"
+      });
+      console.log("getMonitorsRes:", getMonitorsRes);
+      if (getMonitorsRes?.error) {
+        console.error("Error getting monitors:", getMonitorsRes.error);
+      }
+      console.log("Fetched monitors:", getMonitorsRes);
+      setMonitors(getMonitorsRes || []);
+    } catch (error) {
+      console.error("Error fetching monitors:", error);
+      message.error("Failed to fetch monitors. Please try again.");
+    }
   };
+
+  const handleDeleteMonitor = async (id) => {
+    try {
+      const deleteMonitorRes = await deleteMonitor(id);
+      console.log("deleteMonitorRes:", deleteMonitorRes);
+      if (deleteMonitorRes.error) {
+        message.error(`Failed to delete monitor: ${deleteMonitorRes.error}`);
+        console.error("Error deleting monitor:", deleteMonitorRes.error);
+      }
+      message.success("Monitor deleted successfully");
+      return deleteMonitorRes;
+    } catch (error) {
+      message.error("Failed to delete monitor. Please try again.");
+      console.error("Error deleting monitor:", error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetMonitors();
+  }, []);
 
   return (
     <div>
@@ -157,7 +156,7 @@ export default function Home() {
                   shape="circle"
                   type="primary"
                   icon={<DeleteOutlined />}
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDeleteMonitor(item?.id)}
                 />
               </Space>
             ]}
@@ -191,7 +190,7 @@ export default function Home() {
 
       <Modal
         open={modalOpen}
-        title={editing ? "Edit Address" : "Add New Address"}
+        title={editing ? "Edit Monitor" : "Add New Monitor"}
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
       >

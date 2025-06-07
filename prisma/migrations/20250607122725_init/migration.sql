@@ -15,11 +15,14 @@ CREATE TABLE "nodit_webhooks" (
 -- CreateTable
 CREATE TABLE "monitors" (
     "id" TEXT NOT NULL,
+    "description" TEXT DEFAULT '',
     "protocol" TEXT NOT NULL DEFAULT 'ethereum',
     "network" TEXT NOT NULL DEFAULT 'sepolia',
     "eventType" TEXT NOT NULL DEFAULT 'ADDRESS_ACTIVITY',
     "email" TEXT NOT NULL,
-    "addresses" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "address" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "webhookId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -27,7 +30,7 @@ CREATE TABLE "monitors" (
 );
 
 -- CreateIndex
-CREATE INDEX "idx_protocol_network_event" ON "nodit_webhooks"("protocol", "network", "eventType");
+CREATE INDEX "idx_protocol_network_event" ON "nodit_webhooks"("id", "protocol", "network", "eventType");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "monitors_email_key" ON "monitors"("email");
