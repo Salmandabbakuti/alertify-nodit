@@ -20,7 +20,7 @@ export async function POST(req) {
     );
   }
   // Here you can handle the incoming webhook data
-  console.log(body);
+  console.log("webhook received:", JSON.stringify(body, null, 2));
   return NextResponse.json({ message: "Webhook received", data: body });
 }
 
