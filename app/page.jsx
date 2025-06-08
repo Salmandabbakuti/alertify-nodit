@@ -12,7 +12,8 @@ import {
   Typography,
   Switch,
   message,
-  Popconfirm
+  Popconfirm,
+  Empty
 } from "antd";
 import {
   EditOutlined,
@@ -123,6 +124,8 @@ export default function Home() {
     <div>
       <List
         bordered
+        size="large"
+        split
         dataSource={monitors}
         loading={loading?.data || false}
         header={
@@ -206,7 +209,19 @@ export default function Home() {
             />
           </List.Item>
         )}
-      />
+      >
+        {monitors.length === 0 && !loading?.data && (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ marginTop: 24 }}
+            description={
+              account
+                ? "No monitors found. Click '+ Add' to create a new monitor."
+                : "Please connect your wallet to view or create monitors."
+            }
+          />
+        )}
+      </List>
 
       <Modal
         open={modalOpen}
@@ -226,7 +241,9 @@ export default function Home() {
                 ? "Address cannot be changed. Create a new monitor if needed."
                 : undefined
             }
-            rules={[{ required: true, message: "Please enter address" }]}
+            rules={[
+              { required: true, message: "Please enter an address to monitor" }
+            ]}
           >
             <Input placeholder="0x..." readOnly={editing} />
           </Form.Item>
@@ -238,7 +255,7 @@ export default function Home() {
             hasFeedback
             help={
               editing
-                ? "Email cannot be changed. Create a new monitor if needed."
+                ? "Email cannot be changed/reused. Create a new monitor if needed with a different email."
                 : undefined
             }
             rules={[

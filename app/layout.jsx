@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "TrackIt - Nodit",
+  title: "📢 Alertify",
   description: "Realtime Ethereum Address & Token Activity Alerts"
 };
 

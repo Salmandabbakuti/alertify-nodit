@@ -1,16 +1,21 @@
-# TrackIt
+# Alertify
 
 Real-time Ethereum Wallet Monitoring & Email Alerts
 
 ### Overview
 
-TrackIt is a lightweight Ethereum address monitoring tool that notifies users via email when a wallet they care about receives or sends native ETH, ERC-20, ERC-721, or ERC-1155 tokens.
+Alertify is a lightweight Ethereum address monitoring tool that notifies users via email when a wallet they care about receives or sends native ETH, ERC-20, ERC-721, or ERC-1155 tokens.
 
-TrackIt enables users to track wallet activity on Ethereum. Simply enter an address and an email — and you’ll receive real-time alerts whenever that wallet is involved in any transaction.
+Alertify enables users to track wallet activity on Ethereum. Simply enter an address and an email — and you’ll receive real-time alerts whenever that wallet is involved in any transaction.
 
 > Ideal for crypto users, traders, researchers, and protocol teams who want to stay informed of on-chain movements.
 
 Powered by [Nodit Streams & Webhooks](https://nodit.io) for high-speed blockchain event delivery.
+
+![alertify-email-res](https://github.com/user-attachments/assets/19b29da0-d7ec-4349-8c91-857609143fc5)
+
+![alertify-add](https://github.com/user-attachments/assets/80189de4-1ab5-4d90-98a7-735d383e3b10)
+
 
 ### Features
 
@@ -29,6 +34,18 @@ Powered by [Nodit Streams & Webhooks](https://nodit.io) for high-speed blockchai
 - **Telegram/Discord Notifications**: Receive real-time alerts on transactions, token transfers, and address activity directly in your preferred messaging app.
 
 ### Architecture
+
+#### How It Works
+
+1. User adds alert(address to watch, email to receive notifications) → saves in DB
+
+2. Webhook is created/updated on Nodit with all the addresses to watch plus the newly added address
+
+3. Nodit sends event to webhook api endpoint when tx hits a tracked address(incoming or outgoing, Token Transfers)
+
+4. Webhook api endpoint parses tx and checks if it's relevant to any user
+
+5. Email is sent with rich tx details to the respective user
 
 ## Getting Started
 
@@ -52,6 +69,13 @@ npm run dev
 Open your browser and navigate to `http://localhost:3000` to see the app in action.
 
 ### Screenshots
+![alertify-email-res](https://github.com/user-attachments/assets/19b29da0-d7ec-4349-8c91-857609143fc5)
+
+![alertify-home](https://github.com/user-attachments/assets/d69a76c0-b2ab-4427-af77-e3393056c68c)
+
+![alertify-add](https://github.com/user-attachments/assets/80189de4-1ab5-4d90-98a7-735d383e3b10)
+
+![alertify-edit](https://github.com/user-attachments/assets/d3ca7de6-1eb0-44e1-8941-aad1f83eb288)
 
 ## Built With
 

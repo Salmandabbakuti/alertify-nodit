@@ -17,7 +17,8 @@ export default function SiteLayout({ children }) {
           position: "sticky",
           zIndex: 99,
           padding: 0,
-          color: "#fff",
+          backgroundColor: "#ddd",
+          color: "#000",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center"
@@ -31,7 +32,7 @@ export default function SiteLayout({ children }) {
               fontWeight: "bold"
             }}
           >
-            Nodit Monitor
+            📢 Alertify
           </h3>
         </Link>
         <appkit-button />
@@ -55,7 +56,7 @@ export default function SiteLayout({ children }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          ©{new Date().getFullYear()} NODIT Monitor. Powered by Nodit & Reown
+          ©{new Date().getFullYear()} Alertify. Powered by Nodit & Next.js
         </a>
         <p style={{ fontSize: "12px" }}>v0.1.0</p>
       </Footer>
