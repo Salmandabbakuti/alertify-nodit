@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { NextResponse } from "next/server";
 
 const isValidSignature = (body, signature, signingKey) => {
   const hmac = crypto.createHmac("sha256", signingKey);
@@ -14,6 +14,7 @@ export async function POST(req) {
   const signingKey = process.env.NODIT_WEBHOOK_SIGNING_KEY;
 
   if (!isValidSignature(body, signature, signingKey)) {
+    console.error("Invalid webhook signature");
     return NextResponse.json(
       { message: "Invalid webhook signature" },
       { status: 401 }

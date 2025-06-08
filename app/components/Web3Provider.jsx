@@ -14,8 +14,8 @@ const networks = [arbitrum, mainnet];
 
 // 3. Create a metadata object - optional
 const metadata = {
-  name: "My Website",
-  description: "My Website description",
+  name: "Alertify",
+  description: "Real-time Ethereum Wallet Monitoring & Email Alerts",
   url: "https://mywebsite.com", // origin must match your domain & subdomain
   icons: ["https://avatars.mywebsite.com/"]
 };
@@ -26,6 +26,10 @@ createAppKit({
   networks,
   metadata,
   projectId,
+  themeMode: "light",
+  themeVariables: {
+    "--w3m-accent": "#1677ff"
+  },
   features: {
     analytics: true // Optional - defaults to your Cloud configuration
   }
