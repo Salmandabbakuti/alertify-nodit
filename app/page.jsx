@@ -13,7 +13,8 @@ import {
   Switch,
   message,
   Popconfirm,
-  Empty
+  Empty,
+  Select
 } from "antd";
 import {
   EditOutlined,
@@ -24,6 +25,7 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAppKitAccount } from "@reown/appkit/react";
+import { ethers } from "ethers";
 import { createMonitor, getMonitors, deleteMonitor } from "@/lib/actions";
 import "antd/dist/reset.css";
 
@@ -186,7 +188,10 @@ export default function Home() {
               title={
                 <Space wrap>
                   <Text strong>{item.address}</Text>
-                  <Tag color="blue">{item?.eventType}</Tag>
+                  <Tag color="purple">
+                    {item?.protocol?.toUpperCase()}{" "}
+                    {item?.network?.toUpperCase()}
+                  </Tag>
                   <Tag color={item.isActive ? "green" : "red"}>
                     {item.isActive ? "Active" : "Inactive"}
                   </Tag>
@@ -231,10 +236,36 @@ export default function Home() {
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
       >
-        <Form layout="vertical" form={form} onFinish={handleFinish}>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={handleFinish}
+          initialValues={{
+            chain: "ethereum-sepolia"
+          }}
+        >
+          <Form.Item
+            name="chain"
+            label="Select network to monitor"
+            hasFeedback
+            help="Only Sepolia is supported for now. More networks will be added soon."
+            rules={[
+              { required: true, message: "Please select a chain to monitor" }
+            ]}
+          >
+            <Select
+              defaultValue={"ethereum-sepolia"}
+              options={[
+                { label: "Ethereum Sepolia", value: "ethereum-sepolia" },
+                { label: "Ethereum", value: "ethereum", disabled: true },
+                { label: "Arbitrum", value: "arbitrum", disabled: true },
+                { label: "Polygon", value: "polygon", disabled: true }
+              ]}
+            />
+          </Form.Item>
           <Form.Item
             name="address"
-            label="Ethereum Address"
+            label="Wallet Address"
             hasFeedback
             help={
               editing
@@ -242,7 +273,15 @@ export default function Home() {
                 : undefined
             }
             rules={[
-              { required: true, message: "Please enter an address to monitor" }
+              {
+                required: true,
+                validator: (_, value) => {
+                  if (ethers.isAddress(value)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject("Please enter a valid wallet address");
+                }
+              }
             ]}
           >
             <Input placeholder="0x..." readOnly={editing} />
@@ -272,17 +311,19 @@ export default function Home() {
           <Form.Item name="description" label="Description">
             <Input.TextArea
               placeholder="Short description..."
-              maxLength={300}
+              rows={2}
+              maxLength={40}
+              showCount
             />
           </Form.Item>
           <Form.Item name="tokens" label="Notify On">
             <Checkbox.Group
               options={[
+                { label: "Incoming Txns", value: "incoming" },
+                { label: "Outgoing Txns", value: "outgoing" },
                 { label: "ERC20 Transfers", value: "erc20" },
                 { label: "ERC721 Transfers", value: "erc721" },
-                { label: "ERC1155 Transfers", value: "erc1155" },
-                { label: "Incoming Txns", value: "incoming" },
-                { label: "Outgoing Txns", value: "outgoing" }
+                { label: "ERC1155 Transfers", value: "erc1155" }
               ]}
             />
           </Form.Item>

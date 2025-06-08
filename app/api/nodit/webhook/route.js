@@ -49,10 +49,14 @@ export async function POST(req) {
         const emailObj = {
           from: "Alertify <onboarding@resend.dev>",
           to: monitor.email,
-          subject: `New Activity Alert for ${monitor.address}`,
+          subject: `New Activity Alert for ${monitor.address} (${monitor?.description || "No Description"})`,
           react: (
             <AddressActivityEmailTemplate
-              tx={{ ...parsedTx, direction: txDirection }}
+              tx={{
+                ...parsedTx,
+                direction: txDirection,
+                monitorDescription: monitor?.description
+              }}
             />
           )
         };

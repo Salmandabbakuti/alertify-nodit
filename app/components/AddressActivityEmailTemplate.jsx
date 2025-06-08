@@ -40,7 +40,10 @@ export default function AddressActivityEmailTemplate({ tx }) {
         <Section>
           <Heading as="h2">
             {tx.direction === "incoming" ? "📥 Incoming" : "📤 Outgoing"}{" "}
-            {tx.type === "native" ? "Transaction" : tx.type.toUpperCase()} Alert
+            {tx.type === "native"
+              ? "Transaction"
+              : `${tx.type.toUpperCase()} Token Transfer`}{" "}
+            Alert
           </Heading>
           <Text style={{ color: "#555" }}>
             <strong>🔗 Chain:</strong> Ethereum Sepolia
@@ -57,12 +60,18 @@ export default function AddressActivityEmailTemplate({ tx }) {
           <Text>
             <strong>👤 From:</strong>{" "}
             <Link href={`${explorerBaseUrl}/address/${tx.from}`}>
-              {tx.from}
+              {tx.direction === "outgoing"
+                ? `${tx.from} (${tx?.monitorDescription || "You"})`
+                : tx.from}
             </Link>
           </Text>
           <Text>
             <strong>👤 To:</strong>{" "}
-            <Link href={`${explorerBaseUrl}/address/${tx.to}`}>{tx.to}</Link>
+            <Link href={`${explorerBaseUrl}/address/${tx.to}`}>
+              {tx.direction === "incoming"
+                ? `${tx.to} (${tx?.monitorDescription || "You"})`
+                : tx.to}
+            </Link>
           </Text>
 
           {isToken && (
