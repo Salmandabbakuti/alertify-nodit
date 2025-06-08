@@ -12,7 +12,10 @@ Alertify enables users to track wallet activity on Ethereum. Simply enter an add
 
 Powered by [Nodit Streams & Webhooks](https://nodit.io) for high-speed blockchain event delivery.
 
+![alertify-email-res](https://github.com/user-attachments/assets/19b29da0-d7ec-4349-8c91-857609143fc5)
+
 ![alertify-add](https://github.com/user-attachments/assets/80189de4-1ab5-4d90-98a7-735d383e3b10)
+
 
 ### Features
 
@@ -66,6 +69,7 @@ npm run dev
 Open your browser and navigate to `http://localhost:3000` to see the app in action.
 
 ### Screenshots
+![alertify-email-res](https://github.com/user-attachments/assets/19b29da0-d7ec-4349-8c91-857609143fc5)
 
 ![alertify-home](https://github.com/user-attachments/assets/d69a76c0-b2ab-4427-af77-e3393056c68c)
 
