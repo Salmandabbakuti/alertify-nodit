@@ -32,9 +32,9 @@ Powered by [Nodit Streams & Webhooks](https://nodit.io) for high-speed blockchai
 - **Contract Events/Logs**: Track specific contract events or logs
 - **Telegram/Discord Notifications**: Receive real-time alerts on transactions, token transfers, and address activity directly in your preferred messaging app.
 
-### Architecture
+## Architecture
 
-#### How It Works
+### How It Works
 
 1. User adds alert(address to watch, email to receive notifications) → saves in DB
 
@@ -45,6 +45,25 @@ Powered by [Nodit Streams & Webhooks](https://nodit.io) for high-speed blockchai
 4. Webhook api endpoint parses tx and checks if it's relevant to any user
 
 5. Email is sent with rich tx details to the respective user
+
+### Implementation Details
+
+This project uses [Nodit Webhooks](https://developer.nodit.io/docs/webhook) to monitor Ethereum address activity (native txs, ERC20/721/1155 transfers).
+
+When a user adds or removes an address, we call Nodit's [`updateWebhook`](https://developer.nodit.io/reference/updatewebhook) api to manage the address list. This logic lives in [lib/actions/index.js](lib/actions/index.js#L9-L83).
+
+On-chain events(Token transfers or native txs of added addresses) trigger Nodit to send a webhook to our endpoint:
+[`/api/nodit/webhook`](app/api/nodit/webhook/route.js)
+
+Then, the webhook route handler:
+
+- Parses transaction or token transfer data
+
+- Checks if any user is subscribed to the involved address
+
+- Sends an email alert with event details using a React Email template
+
+This system ensures users receive fast, clear alerts for any activity on addresses they monitor.
 
 ## Getting Started
 
