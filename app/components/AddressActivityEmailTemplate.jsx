@@ -8,9 +8,13 @@ import {
   Heading
 } from "@react-email/components";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { ethers } from "ethers";
 
+dayjs.extend(utc);
+
 function formatTokenValue(value, decimals = 18) {
+  console.log("Formatting token value:", value, "with decimals:", decimals);
   try {
     return ethers.formatUnits(value, decimals);
   } catch {
@@ -20,12 +24,13 @@ function formatTokenValue(value, decimals = 18) {
 
 function formatTimestamp(unix) {
   if (!unix) return "Unknown time";
-  return dayjs.unix(unix).format("MMM D, YYYY h:mm A");
+  return dayjs.unix(unix).utc().format("MMM D, YYYY h:mm A");
 }
 
 export default function AddressActivityEmailTemplate({ tx }) {
   const explorerBaseUrl = `https://sepolia.etherscan.io`;
   const isToken = tx.type !== "native";
+  console.log("tx value:", tx.value, typeof tx.value);
 
   return (
     <Html lang="en">
@@ -49,7 +54,7 @@ export default function AddressActivityEmailTemplate({ tx }) {
             <strong>🔗 Chain:</strong> Ethereum Sepolia
           </Text>
           <Text>
-            <strong>🕒 Time:</strong> {formatTimestamp(tx.timestamp)}
+            <strong>🕒 Time:</strong> {formatTimestamp(tx.timestamp)} (UTC)
           </Text>
           <Text>
             <strong>🔢 Block:</strong>{" "}
@@ -61,7 +66,7 @@ export default function AddressActivityEmailTemplate({ tx }) {
             <strong>👤 From:</strong>{" "}
             <Link href={`${explorerBaseUrl}/address/${tx.from}`}>
               {tx.direction === "outgoing"
-                ? `${tx.from} (${tx?.monitorDescription || "You"})`
+                ? `${tx.from} (${tx?.monitorDescription || "<no description>"})`
                 : tx.from}
             </Link>
           </Text>
@@ -69,7 +74,7 @@ export default function AddressActivityEmailTemplate({ tx }) {
             <strong>👤 To:</strong>{" "}
             <Link href={`${explorerBaseUrl}/address/${tx.to}`}>
               {tx.direction === "incoming"
-                ? `${tx.to} (${tx?.monitorDescription || "You"})`
+                ? `${tx.to || "-"} (${tx?.monitorDescription || "<no description>"})`
                 : tx.to}
             </Link>
           </Text>
@@ -84,20 +89,24 @@ export default function AddressActivityEmailTemplate({ tx }) {
               </Text>
               {tx.tokenId && (
                 <Text>
-                  <strong>🆔 Token ID:</strong> {tx.tokenId}
-                </Text>
-              )}
-              {tx.value && (
-                <Text>
-                  <strong>💰 Amount:</strong> {formatTokenValue(tx.value)}
+                  <strong>🆔 Token ID:</strong>{" "}
+                  <Link
+                    href={`${explorerBaseUrl}/token/${tx.tokenAddress}?a=${tx.tokenId}`}
+                  >
+                    {tx.tokenId}
+                  </Link>
                 </Text>
               )}
             </>
           )}
 
-          {!isToken && tx.value && (
+          {tx.value && (
             <Text>
-              <strong>💰 Value:</strong> {formatTokenValue(tx.value)} ETH
+              <strong>💰 {isToken ? "Amount" : "Value"}:</strong>{" "}
+              {tx.type === "erc1155"
+                ? tx.value // For ERC1155, value is the amount transferred
+                : formatTokenValue(tx.value)}{" "}
+              {isToken ? "" : "ETH"}
             </Text>
           )}
 
