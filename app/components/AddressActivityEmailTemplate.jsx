@@ -14,7 +14,6 @@ import { ethers } from "ethers";
 dayjs.extend(utc);
 
 function formatTokenValue(value, decimals = 18) {
-  console.log("Formatting token value:", value, "with decimals:", decimals);
   try {
     return ethers.formatUnits(value, decimals);
   } catch {
@@ -30,7 +29,6 @@ function formatTimestamp(unix) {
 export default function AddressActivityEmailTemplate({ tx }) {
   const explorerBaseUrl = `https://sepolia.etherscan.io`;
   const isToken = tx.type !== "native";
-  console.log("tx value:", tx.value, typeof tx.value);
 
   return (
     <Html lang="en">

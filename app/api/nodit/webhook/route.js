@@ -28,12 +28,15 @@ export async function POST(req) {
   }
   try {
     // parse webhook message
+    console.log("Received webhook event:", JSON.stringify(body, null, 2));
     const webhookMessageObj = body?.event?.messages?.[0] || {};
     const from = webhookMessageObj?.from_address?.toLowerCase();
     const to = webhookMessageObj?.to_address?.toLowerCase();
-    const parsedTx = parseNoditMessage(webhookMessageObj);
-    // get all monitors with to and from addresses
+    // get all active monitors with any of the addresses in the webhook message
     const monitors = await prisma.monitor.findMany({
+      skip: 0,
+      take: 10, // Limit to 10 monitors for performance
+      orderBy: { createdAt: "asc" }, // first created first
       where: {
         address: {
           in: [from, to]
@@ -41,7 +44,12 @@ export async function POST(req) {
         isActive: true
       }
     });
-
+    // If no monitors found, log and return early
+    if (monitors.length === 0) {
+      console.log("No active monitors found for this event.");
+      return NextResponse.json({ received: true }, { status: 200 });
+    }
+    const parsedTx = parseNoditMessage(webhookMessageObj);
     const emailResults = await Promise.all(
       monitors.map(async (monitor) => {
         const txDirection =

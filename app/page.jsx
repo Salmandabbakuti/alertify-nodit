@@ -66,7 +66,7 @@ export default function Home() {
         message.error(`Failed to create monitor: ${createMonitorRes.error}`);
         return;
       }
-      message.success("Monitor created successfully");
+      message.success("Monitor created/updated successfully");
       setModalOpen(false);
       form.resetFields();
       handleGetMonitors(); // Refresh the list after creation
