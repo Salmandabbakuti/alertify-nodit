@@ -35,7 +35,7 @@ export async function POST(req) {
     // get all active monitors with any of the addresses in the webhook message
     const monitors = await prisma.monitor.findMany({
       skip: 0,
-      take: 10, // Limit to 10 monitors for performance
+      take: 20, // Limit to 20 monitors for performance
       orderBy: { createdAt: "asc" }, // first created first
       where: {
         address: {
@@ -88,8 +88,6 @@ export async function POST(req) {
       })
     );
     console.log("Webhook Email results:", emailResults);
-
-    console.log("webhook received:", JSON.stringify(body, null, 2));
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
     console.error("Error processing webhook:", error);

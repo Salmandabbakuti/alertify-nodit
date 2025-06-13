@@ -72,7 +72,7 @@ export default function AddressActivityEmailTemplate({ tx }) {
             <strong>👤 To:</strong>{" "}
             <Link href={`${explorerBaseUrl}/address/${tx.to}`}>
               {tx.direction === "incoming"
-                ? `${tx.to || "-"} (${tx?.monitorDescription || "<no description>"})`
+                ? `${tx.to} (${tx?.monitorDescription || "<no description>"})`
                 : tx.to}
             </Link>
           </Text>
