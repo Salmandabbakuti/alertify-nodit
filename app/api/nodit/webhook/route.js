@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import AddressActivityEmailTemplate from "@/app/components/AddressActivityEmailTemplate";
 import prisma from "@/lib/prisma";
-import { parseNoditMessage } from "@/lib/utils";
+import { parseNoditWebhookMessage } from "@/lib/utils";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -49,7 +49,7 @@ export async function POST(req) {
       console.log("No active monitors found for this event.");
       return NextResponse.json({ received: true }, { status: 200 });
     }
-    const parsedTx = parseNoditMessage(webhookMessageObj);
+    const parsedTx = parseNoditWebhookMessage(webhookMessageObj);
     const emailResults = await Promise.all(
       monitors.map(async (monitor) => {
         const txDirection =
