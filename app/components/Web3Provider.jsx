@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider, theme, App } from "antd";
 import "@ant-design/v5-patch-for-react-19";
 import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
@@ -47,7 +47,7 @@ export default function Web3Provider({ children }) {
         algorithm: [theme.defaultAlgorithm]
       }}
     >
-      {mounted && children}
+      <App>{mounted && children}</App>
     </ConfigProvider>
   );
 }

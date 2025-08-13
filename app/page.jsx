@@ -11,10 +11,10 @@ import {
   Tag,
   Typography,
   Switch,
-  message,
   Popconfirm,
   Empty,
-  Select
+  Select,
+  App
 } from "antd";
 import {
   EditOutlined,
@@ -40,6 +40,7 @@ export default function Home() {
     create: false
   });
 
+  const { message } = App.useApp();
   const [form] = Form.useForm();
   const { address: account = "" } = useAppKitAccount(); // empty string is neccessary to avoid undefined issues in prisma queries
 
@@ -254,7 +255,6 @@ export default function Home() {
             ]}
           >
             <Select
-              defaultValue={"ethereum-sepolia"}
               options={[
                 { label: "Ethereum Sepolia", value: "ethereum-sepolia" },
                 { label: "Ethereum", value: "ethereum", disabled: true },

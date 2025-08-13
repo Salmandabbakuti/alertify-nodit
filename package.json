@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,22 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ant-design/icons": "^6.0.0",
+    "@ant-design/icons": "^5.6.1",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
-    "@prisma/client": "^6.9.0",
-    "@react-email/components": "^0.0.41",
-    "@reown/appkit": "^1.7.8",
-    "@reown/appkit-adapter-ethers": "^1.7.8",
-    "antd": "^5.25.4",
+    "@prisma/adapter-pg": "^6.14.0",
+    "@prisma/client": "^6.14.0",
+    "@react-email/components": "^0.5.0",
+    "@reown/appkit": "^1.7.19",
+    "@reown/appkit-adapter-ethers": "^1.7.19",
+    "antd": "^5.27.0",
     "dayjs": "^1.11.13",
-    "ethers": "^6.14.3",
-    "next": "15.3.3",
-    "node-fetch": "^2.7.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "resend": "^4.5.2"
+    "ethers": "^6.15.0",
+    "next": "15.4.6",
+    "node-fetch": "^3.3.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "resend": "^6.0.1"
   },
   "devDependencies": {
-    "prisma": "^6.9.0"
+    "prisma": "^6.14.0"
   }
 }
