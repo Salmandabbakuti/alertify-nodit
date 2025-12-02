@@ -254,7 +254,6 @@ export default function Home() {
             ]}
           >
             <Select
-              defaultValue={"ethereum-sepolia"}
               options={[
                 { label: "Ethereum Sepolia", value: "ethereum-sepolia" },
                 { label: "Ethereum", value: "ethereum", disabled: true },
