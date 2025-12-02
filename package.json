@@ -28,6 +28,7 @@
     "resend": "^6.5.2"
   },
   "devDependencies": {
+    "babel-plugin-react-compiler": "^1.0.0",
     "prisma": "^7.0.1"
   }
 }
