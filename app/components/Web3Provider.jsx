@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
-import "@ant-design/v5-patch-for-react-19";
 import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { arbitrum, mainnet, sepolia } from "@reown/appkit/networks";
@@ -29,7 +28,7 @@ createAppKit({
   themeMode: "light",
   allowUnsupportedChain: true,
   themeVariables: {
-    "--w3m-accent": "#1677ff"
+    "--apkt-accent": "#1677ff"
   },
   features: {
     analytics: true // Optional - defaults to your Cloud configuration
