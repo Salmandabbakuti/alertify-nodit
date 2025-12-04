@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import {
   Button,
-  List,
+  Table,
   Modal,
   Form,
   Input,
@@ -122,111 +122,133 @@ export default function Home() {
     handleGetMonitors();
   }, [account]);
 
+  const columns = [
+    {
+      title: "Address",
+      key: "address",
+      render: ({ address, description }) => (
+        <Space orientation="vertical">
+          <Text strong>{address}</Text>
+          <Text type="secondary">{description}</Text>
+        </Space>
+      )
+    },
+    {
+      title: "Network",
+      dataIndex: "protocol",
+      key: "protocol",
+      render: (protocol, record) => (
+        <Tag color="purple">
+          {protocol?.toUpperCase()} {record?.network?.toUpperCase()}
+        </Tag>
+      )
+    },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (isActive) => (
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Active" : "Inactive"}
+        </Tag>
+      )
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: (email) => <Text type="secondary">{email || "Not provided"}</Text>
+    },
+    {
+      title: "Created",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => (
+        <Text type="secondary">
+          {dayjs(createdAt).format("MMM D, YYYY h:mm A")}
+        </Text>
+      )
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, item) => (
+        <Space>
+          <Button
+            title="Edit Monitor"
+            shape="circle"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => showEditModal(item)}
+          />
+          <Popconfirm
+            title="Are you sure you want to delete this monitor?"
+            onConfirm={() => handleDeleteMonitor(item?.id)}
+          >
+            <Button
+              title="Delete Monitor"
+              danger
+              shape="circle"
+              type="primary"
+              icon={<DeleteOutlined />}
+            />
+          </Popconfirm>
+        </Space>
+      )
+    }
+  ];
+
   return (
     <div>
-      <List
-        bordered
-        size="large"
-        split
-        dataSource={monitors}
-        loading={loading?.data || false}
-        header={
-          <Space
-            style={{
-              width: "100%",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
-          >
-            <h2 style={{ margin: 0, flex: 1, textAlign: "left" }}>Monitors</h2>
-            <Space style={{ marginLeft: "auto", gap: 8 }}>
-              <Button
-                type="primary"
-                shape="round"
-                icon={<PlusOutlined />}
-                onClick={showAddModal}
-              >
-                Add
-              </Button>
-              <Button
-                type="default"
-                shape="circle"
-                title="Refresh"
-                icon={<SyncOutlined spin={loading?.data || false} />}
-                onClick={handleGetMonitors}
-              />
-            </Space>
+      <Space orientation="vertical" style={{ width: "100%", marginBottom: 16 }}>
+        <Space
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <h2 style={{ margin: 0, flex: 1, textAlign: "left" }}>Monitors</h2>
+          <Space style={{ gap: 8 }}>
+            <Button
+              type="primary"
+              shape="round"
+              icon={<PlusOutlined />}
+              onClick={showAddModal}
+            >
+              Add
+            </Button>
+            <Button
+              type="default"
+              shape="circle"
+              title="Refresh"
+              icon={<SyncOutlined spin={loading?.data || false} />}
+              onClick={handleGetMonitors}
+            />
           </Space>
-        }
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              <Space key="actions">
-                <Button
-                  title="Edit Monitor"
-                  shape="circle"
-                  type="primary"
-                  icon={<EditOutlined />}
-                  onClick={() => showEditModal(item)}
-                />
-                <Popconfirm
-                  title="Are you sure you want to delete this monitor?"
-                  onConfirm={() => handleDeleteMonitor(item?.id)}
-                >
-                  <Button
-                    title="Delete Monitor"
-                    danger
-                    shape="circle"
-                    type="primary"
-                    icon={<DeleteOutlined />}
-                  />
-                </Popconfirm>
-              </Space>
-            ]}
-          >
-            <List.Item.Meta
-              title={
-                <Space wrap>
-                  <Text strong>{item.address}</Text>
-                  <Tag color="purple">
-                    {item?.protocol?.toUpperCase()}{" "}
-                    {item?.network?.toUpperCase()}
-                  </Tag>
-                  <Tag color={item.isActive ? "green" : "red"}>
-                    {item.isActive ? "Active" : "Inactive"}
-                  </Tag>
-                </Space>
-              }
+        </Space>
+      </Space>
+
+      <Table
+        columns={columns}
+        dataSource={monitors}
+        locale={{
+          emptyText: (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ marginTop: 24 }}
               description={
-                <Space wrap>
-                  <Text type="secondary">
-                    {item.description || "No description"}
-                  </Text>
-                  <Text type="secondary">
-                    <MailOutlined /> {item.email || "Not provided"}
-                  </Text>
-                  <Text type="secondary">
-                    Added on:{" "}
-                    {dayjs(item.createdAt).format("DD MMM YYYY HH:mm")}
-                  </Text>
-                </Space>
+                account
+                  ? "No monitors found. Click '+ Add' to create a new monitor."
+                  : "Please connect your wallet to view or create monitors."
               }
             />
-          </List.Item>
-        )}
-      >
-        {monitors.length === 0 && !loading?.data && (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            style={{ marginTop: 24 }}
-            description={
-              account
-                ? "No monitors found. Click '+ Add' to create a new monitor."
-                : "Please connect your wallet to view or create monitors."
-            }
-          />
-        )}
-      </List>
+          )
+        }}
+        loading={loading?.data || false}
+        rowKey="id"
+        pagination={{ pageSize: 10 }}
+      />
 
       <Modal
         open={modalOpen}
