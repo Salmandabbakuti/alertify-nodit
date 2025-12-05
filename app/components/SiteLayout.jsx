@@ -58,7 +58,7 @@ export default function SiteLayout({ children }) {
         >
           ©{new Date().getFullYear()} Alertify. Powered by Nodit & Next.js
         </a>
-        <p style={{ fontSize: "12px" }}>v0.1.0</p>
+        <p style={{ fontSize: "12px" }}>v0.2.0</p>
       </Footer>
     </Layout>
   );
