@@ -1,7 +1,5 @@
-"use server";
 import fetch from "node-fetch";
-import prisma from "@/lib/prisma";
-import { errorResponse } from "@/lib/utils";
+import prisma from "../prisma";
 
 const NODIT_WEBHOOK_ID = process.env.NODIT_WEBHOOK_ID || "6157";
 const BASE_URL = "https://web3.nodit.io/v1";

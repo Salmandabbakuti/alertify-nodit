@@ -1,6 +1,5 @@
-"use client";
 import { Divider, Layout } from "antd";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import "antd/dist/reset.css";
 
 const { Header, Footer, Content } = Layout;
@@ -56,7 +55,7 @@ export default function SiteLayout({ children }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          ©{new Date().getFullYear()} Alertify. Powered by Nodit & Next.js
+          ©{new Date().getFullYear()} Alertify. Powered by Nodit & Tanstack
         </a>
         <p style={{ fontSize: "12px" }}>v0.2.0</p>
       </Footer>

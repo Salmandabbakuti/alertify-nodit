@@ -1,4 +1,5 @@
-"use client";
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { useState, useEffect } from "react";
 import {
   Button,
@@ -19,19 +20,26 @@ import {
 import {
   EditOutlined,
   DeleteOutlined,
-  MailOutlined,
   PlusOutlined,
   SyncOutlined
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { ethers } from "ethers";
-import { createMonitor, getMonitors, deleteMonitor } from "@/lib/actions";
+// import { createMonitor, getMonitors, deleteMonitor } from "../lib/actions";
 import "antd/dist/reset.css";
+
+export const Route = createFileRoute("/")({
+  component: Home
+});
+
+const getMonitorsFn = createServerFn({ method: "GET" })
+  .inputValidator((d) => d)
+  .handler(() => {});
 
 const { Text } = Typography;
 
-export default function Home() {
+function Home() {
   const [monitors, setMonitors] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
