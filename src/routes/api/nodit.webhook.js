@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/nodit/webhook")({
       GET: () => new Response("Hello from Nodit Webhook Handler!"),
       POST: async ({ request }) => {
         const body = await request.json();
-        const signature = req.headers.get("x-signature");
+        const signature = request.headers.get("x-signature");
         const signingKey = process.env.NODIT_WEBHOOK_SIGNING_KEY;
 
         if (!isValidSignature(body, signature, signingKey)) {
