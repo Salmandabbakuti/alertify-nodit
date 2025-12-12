@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@tanstack/react-start";
 import { useState, useEffect } from "react";
 import {
   Button,
@@ -26,16 +26,16 @@ import {
 import dayjs from "dayjs";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { ethers } from "ethers";
-// import { createMonitor, getMonitors, deleteMonitor } from "@/lib/actions";
+import {
+  getMonitorsFn,
+  createMonitorFn,
+  deleteMonitorFn
+} from "@/lib/functions";
 import "antd/dist/reset.css";
 
 export const Route = createFileRoute("/")({
   component: Home
 });
-
-const getMonitorsFn = createServerFn({ method: "GET" })
-  .inputValidator((d) => d)
-  .handler(() => {});
 
 const { Text } = Typography;
 
@@ -50,6 +50,10 @@ function Home() {
 
   const [form] = Form.useForm();
   const { address: account = "" } = useAppKitAccount(); // empty string is neccessary to avoid undefined issues in prisma queries
+
+  const createMonitor = useServerFn(createMonitorFn);
+  const deleteMonitor = useServerFn(deleteMonitorFn);
+  const getMonitors = useServerFn(getMonitorsFn);
 
   const showAddModal = () => {
     setEditing(null);
@@ -67,7 +71,9 @@ function Home() {
     if (!account) return message.error("Please connect your wallet first");
     setLoading((prev) => ({ ...prev, create: true }));
     try {
-      const createMonitorRes = await createMonitor(values, account);
+      const createMonitorRes = await createMonitor({
+        data: { ...values, createdBy: account }
+      });
       console.log("createMonitorRes:", createMonitorRes);
       if (createMonitorRes?.error) {
         console.error("Error creating monitor:", createMonitorRes.error);
@@ -90,7 +96,9 @@ function Home() {
   const handleGetMonitors = async () => {
     setLoading((prev) => ({ ...prev, data: true }));
     try {
-      const getMonitorsRes = await getMonitors(account);
+      const getMonitorsRes = await getMonitors({
+        data: account
+      });
       console.log("getMonitorsRes:", getMonitorsRes);
       if (getMonitorsRes?.error) {
         console.error("Error getting monitors:", getMonitorsRes.error);
@@ -110,7 +118,9 @@ function Home() {
   const handleDeleteMonitor = async (id) => {
     if (!account) return message.error("Please connect your wallet first");
     try {
-      const deleteMonitorRes = await deleteMonitor(id, account);
+      const deleteMonitorRes = await deleteMonitor({
+        data: { id, createdBy: account }
+      });
       console.log("deleteMonitorRes:", deleteMonitorRes);
       if (deleteMonitorRes.error) {
         console.error("Error deleting monitor:", deleteMonitorRes.error);
@@ -271,7 +281,8 @@ function Home() {
           form={form}
           onFinish={handleFinish}
           initialValues={{
-            chain: "ethereum-sepolia"
+            chain: "ethereum-sepolia",
+            isActive: false
           }}
         >
           <Form.Item

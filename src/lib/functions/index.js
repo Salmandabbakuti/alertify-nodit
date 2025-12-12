@@ -1,10 +1,46 @@
+import { createServerFn } from "@tanstack/react-start";
 import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
 
 const NODIT_WEBHOOK_ID = process.env.NODIT_WEBHOOK_ID || "6157";
 const BASE_URL = "https://web3.nodit.io/v1";
 
-export async function createMonitor(
+export const getMonitorsFn = createServerFn({ method: "GET" }).handler(
+  async ({ data: createdBy }) => {
+    console.log("Getting monitors for user:", createdBy);
+    // get monitors for the given createdBy
+    const monitors = await prisma.monitor.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { createdBy: createdBy?.toLowerCase() }
+    });
+    console.log("Retrieved all monitors");
+    return monitors;
+  }
+);
+
+export const deleteMonitorFn = createServerFn({ method: "POST" })
+  .inputValidator((d) => d)
+  .handler(({ data }) => {
+    const { id, createdBy } = data;
+    console.log("Deleting monitor:", id, "for user:", createdBy);
+    return deleteMonitor(id, createdBy);
+  });
+
+export const createMonitorFn = createServerFn({ method: "POST" })
+  .inputValidator((d) => d)
+  .handler(async ({ data }) => {
+    const { createdBy, ...monitorData } = data;
+    console.log("Creating monitor:", monitorData, "for user:", createdBy);
+    return createMonitor(monitorData, createdBy);
+  });
+
+const errorResponse = (error, statusCode = 500, isExpected = false) => {
+  console.log("error handler:", { error, statusCode, isExpected });
+  let message = isExpected ? error?.message || error : "Something went wrong!";
+  return { statusCode, error: message };
+};
+
+async function createMonitor(
   { email, address, description, isActive = true },
   createdBy
 ) {
@@ -96,7 +132,7 @@ export async function createMonitor(
   }
 }
 
-export async function deleteMonitor(id, createdBy) {
+async function deleteMonitor(id, createdBy) {
   if (!id) return errorResponse("Monitor ID is required", 400, true);
   try {
     const monitor = await prisma.monitor.findUnique({
@@ -163,14 +199,4 @@ export async function deleteMonitor(id, createdBy) {
     console.error("Error deleting monitor:", error);
     return errorResponse(error);
   }
-}
-
-export async function getMonitors(createdBy) {
-  // get monitors for the given createdBy
-  const monitors = await prisma.monitor.findMany({
-    orderBy: { createdAt: "desc" },
-    where: { createdBy: createdBy?.toLowerCase() }
-  });
-  console.log("Retrieved all monitors");
-  return monitors;
 }
