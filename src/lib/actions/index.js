@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import prisma from "../prisma";
+import prisma from "@/lib/prisma";
 
 const NODIT_WEBHOOK_ID = process.env.NODIT_WEBHOOK_ID || "6157";
 const BASE_URL = "https://web3.nodit.io/v1";

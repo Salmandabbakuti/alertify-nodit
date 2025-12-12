@@ -4,8 +4,8 @@ import {
   HeadContent,
   Scripts
 } from "@tanstack/react-router";
-import Web3Provider from "../components/Web3Provider";
-import SiteLayout from "../components/SiteLayout";
+import Web3Provider from "@/components/Web3Provider";
+import SiteLayout from "@/components/SiteLayout";
 
 export const Route = createRootRoute({
   head: () => ({

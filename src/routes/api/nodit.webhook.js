@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import crypto from "crypto";
 import { Resend } from "resend";
 import { json } from "@tanstack/react-start";
-import prisma from "../../lib/prisma";
-import { parseNoditWebhookMessage } from "../../lib/utils";
-import AddressActivityEmailTemplate from "../../components/AddressActivityEmailTemplate";
+import prisma from "@/lib/prisma";
+import { parseNoditWebhookMessage } from "@/lib/utils";
+import AddressActivityEmailTemplate from "@/components/AddressActivityEmailTemplate";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

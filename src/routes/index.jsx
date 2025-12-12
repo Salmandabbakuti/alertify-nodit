@@ -26,7 +26,7 @@ import {
 import dayjs from "dayjs";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { ethers } from "ethers";
-// import { createMonitor, getMonitors, deleteMonitor } from "../lib/actions";
+// import { createMonitor, getMonitors, deleteMonitor } from "@/lib/actions";
 import "antd/dist/reset.css";
 
 export const Route = createFileRoute("/")({
