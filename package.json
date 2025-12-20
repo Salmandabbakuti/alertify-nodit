@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "start": "node .output/server/index.mjs"
+    "dev": "bun --bun vite dev",
+    "build": "bun --bun vite build",
+    "start": "bun --bun node .output/server/index.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",

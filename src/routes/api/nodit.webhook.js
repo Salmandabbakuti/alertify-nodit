@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import crypto from "crypto";
 import { Resend } from "resend";
 import { json } from "@tanstack/react-start";
 import prisma from "@/lib/prisma";
@@ -9,7 +8,7 @@ import AddressActivityEmailTemplate from "@/components/AddressActivityEmailTempl
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const isValidSignature = (body, signature, signingKey) => {
-  const hmac = crypto.createHmac("sha256", signingKey);
+  const hmac = new Bun.CryptoHasher("sha256", signingKey);
   hmac.update(JSON.stringify(body), "utf8");
   const digest = hmac.digest("hex");
   return digest === signature;
