@@ -263,7 +263,8 @@ export default function Home() {
           form={form}
           onFinish={handleFinish}
           initialValues={{
-            chain: "ethereum-sepolia"
+            chain: "ethereum-sepolia",
+            isActive: false
           }}
         >
           <Form.Item
